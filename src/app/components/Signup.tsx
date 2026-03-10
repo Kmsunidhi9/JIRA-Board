@@ -1,10 +1,42 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Mail, Lock, Eye, EyeOff, Building } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+
 
 export function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [company, setCompany] = useState("");
+  const { login} = useAuth();
+  const navigate = useNavigate();
+
+const handleSubmit = async (e) =>{
+  e.preventDefault();
+  if(password !== confirmPassword){
+    return;
+  }
+
+  if(!email || !password || !firstName || !lastName || !company){
+    return;
+  } 
+
+  try{
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    login('user');
+    navigate('/dashboard');
+  }catch(error){
+    console.error("Signup failed", error);
+  }
+  
+  
+
+}
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0747A6] to-[#0052CC] flex items-center justify-center p-4">
@@ -12,28 +44,30 @@ export function Signup() {
         <div className="bg-white rounded-lg shadow-xl p-8">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-[#0747A6] rounded-lg mb-4">
-              <span className="text-white text-2xl font-bold">J</span>
+              <span className="text-white text-2xl font-bold">Jira</span>
             </div>
             <h1 className="mb-2">Create Account</h1>
             <p className="text-muted-foreground">Sign up to get started with Jira Clone</p>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block mb-2">First Name</label>
                 <input
                   type="text"
-                  placeholder="John"
+                  placeholder="Type your name here"
                   className="w-full px-4 py-2 border border-border rounded focus:outline-none focus:ring-2 focus:ring-[#0747A6]"
+                  onChange={(e) => setFirstName(e.target.value)}
                 />
               </div>
               <div>
                 <label className="block mb-2">Last Name</label>
                 <input
                   type="text"
-                  placeholder="Doe"
+                  placeholder="Type your name here"
                   className="w-full px-4 py-2 border border-border rounded focus:outline-none focus:ring-2 focus:ring-[#0747A6]"
+                  onChange={(e) => setLastName(e.target.value)}
                 />
               </div>
             </div>
@@ -44,8 +78,11 @@ export function Signup() {
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                 <input
                   type="email"
-                  placeholder="john.doe@example.com"
+                  placeholder="name@example.com"
                   className="w-full pl-10 pr-4 py-2 border border-border rounded focus:outline-none focus:ring-2 focus:ring-[#0747A6]"
+                  onChange={(e)=>{
+                    setEmail(e.target.value)
+                  }}
                 />
               </div>
             </div>
@@ -58,6 +95,7 @@ export function Signup() {
                   type="text"
                   placeholder="Your company name"
                   className="w-full pl-10 pr-4 py-2 border border-border rounded focus:outline-none focus:ring-2 focus:ring-[#0747A6]"
+                  onChange={(e) => setCompany(e.target.value)}
                 />
               </div>
             </div>
@@ -70,11 +108,13 @@ export function Signup() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Create a password"
                   className="w-full pl-10 pr-10 py-2 border border-border rounded focus:outline-none focus:ring-2 focus:ring-[#0747A6]"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                 
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -89,6 +129,7 @@ export function Signup() {
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm your password"
                   className="w-full pl-10 pr-10 py-2 border border-border rounded focus:outline-none focus:ring-2 focus:ring-[#0747A6]"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 <button
                   type="button"

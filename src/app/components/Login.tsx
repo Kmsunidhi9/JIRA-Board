@@ -1,9 +1,28 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 export function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const { login} = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try{
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if(email === 'user@example.com' && password === 'password123'){
+        login('admin');
+        navigate('/dashboard');
+      }
+    }catch(error){
+      console.error("Login failed", error);
+
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0747A6] to-[#0052CC] flex items-center justify-center p-4">
@@ -11,13 +30,13 @@ export function Login() {
         <div className="bg-white rounded-lg shadow-xl p-8">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-[#0747A6] rounded-lg mb-4">
-              <span className="text-white text-2xl font-bold">J</span>
+              <span className="text-white text-2xl font-bold">Jira</span>
             </div>
             <h1 className="mb-2">Welcome Back</h1>
             <p className="text-muted-foreground">Sign in to your Jira Clone account</p>
           </div>
 
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label className="block mb-2">Email</label>
               <div className="relative">
@@ -26,6 +45,9 @@ export function Login() {
                   type="email"
                   placeholder="Enter your email"
                   className="w-full pl-10 pr-4 py-2 border border-border rounded focus:outline-none focus:ring-2 focus:ring-[#0747A6]"
+                  onChange={(e) =>{
+                    setEmail(e.target.value)
+                  }}
                 />
               </div>
             </div>
@@ -38,6 +60,9 @@ export function Login() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
                   className="w-full pl-10 pr-10 py-2 border border-border rounded focus:outline-none focus:ring-2 focus:ring-[#0747A6]"
+                  onChange ={(e)=>{
+                    setPassword(e.target.value)
+                  }}
                 />
                 <button
                   type="button"
@@ -54,15 +79,14 @@ export function Login() {
                 <input type="checkbox" className="w-4 h-4" />
                 <span className="text-sm">Remember me</span>
               </label>
-              <a href="#" className="text-sm text-[#0747A6] hover:underline">
+              <a href="/forgot-password" className="text-sm text-[#0747A6] hover:underline">
                 Forgot password?
               </a>
             </div>
 
             <button
               type="submit"
-              className="w-full py-2 bg-[#0747A6] text-white rounded hover:bg-[#0747A6]/90 transition-colors"
-            >
+              className="w-full py-2 bg-[#0747A6] text-white rounded hover:bg-[#0747A6]/90 transition-colors">
               Sign In
             </button>
           </form>

@@ -1,8 +1,14 @@
-import { Outlet, Link, useLocation } from "react-router";
-import { LayoutDashboard, FolderKanban, ListTodo, BarChart3, Settings, Search, Bell, HelpCircle, User, Plus, ChevronDown } from "lucide-react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router";
+import { LayoutDashboard, FolderKanban, ListTodo, BarChart3, Settings, Search, Bell, HelpCircle, User, Plus, ChevronDown, LogOut } from "lucide-react";
+import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 export function RootLayout() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+
+  const {logout} = useAuth();
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -87,11 +93,60 @@ export function RootLayout() {
             <button className="p-2 hover:bg-muted rounded">
               <HelpCircle className="w-5 h-5 text-muted-foreground" />
             </button>
-            <button className="p-2 hover:bg-muted rounded">
-              <div className="w-8 h-8 rounded-full bg-[#0747A6] flex items-center justify-center">
-                <User className="w-4 h-4 text-white" />
-              </div>
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="p-2 hover:bg-muted rounded"
+              >
+                <div className="w-8 h-8 rounded-full bg-[#0747A6] flex items-center justify-center">
+                  <User className="w-4 h-4 text-white" />
+                </div>
+              </button>
+
+              {showUserMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowUserMenu(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-56 bg-white border border-border rounded-lg shadow-lg z-20 overflow-hidden">
+                    <div className="p-3 border-b border-border">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-[#0747A6] flex items-center justify-center text-white">
+                          JD
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium truncate">John Doe</p>
+                          <p className="text-sm text-muted-foreground truncate">john.doe@example.com</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="py-1">
+                      <Link
+                        to="/settings"
+                        onClick={() => setShowUserMenu(false)}
+                        className="flex items-center gap-3 px-4 py-2 hover:bg-muted transition-colors"
+                      >
+                        <Settings className="w-4 h-4 text-muted-foreground" />
+                        <span>Settings</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setShowUserMenu(false);
+                          logout();
+                          navigate("/login");
+
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2 hover:bg-muted transition-colors text-left text-red-600"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </header>
 

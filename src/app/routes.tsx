@@ -11,6 +11,8 @@ import { IssueDetail } from "./components/IssueDetail";
 import { Settings } from "./components/Settings";
 import { Login } from "./components/Login";
 import { Signup } from "./components/Signup";
+import { ForgotPassword } from "./components/ForgetPassword";
+
 
 
 export const router = createBrowserRouter([
@@ -21,6 +23,10 @@ export const router = createBrowserRouter([
   {
     path: "/signup",
     Component: Signup,
+  },
+  {
+    path: "/forgot-password",
+    Component: ForgotPassword,
   },
   {
     path: "/",
