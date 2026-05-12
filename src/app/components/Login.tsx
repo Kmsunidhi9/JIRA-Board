@@ -2,6 +2,39 @@ import { Link, useNavigate } from "react-router";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { gql }  from '@apollo/client';
+import { useMutation } from "@apollo/client/react";
+import type { Role} from "../types/auth";
+
+const LOGIN = gql`
+mutation Login($email:String!, $password:String!) {
+
+login(email:$email, password:$password) {
+
+token
+user {
+id
+email
+role
+}}}`;
+
+type LoginResponse = {
+  login: {
+    token: string;
+    user: {
+      id: string;
+      email: string;
+      role: string;
+    };
+  };
+};
+
+type Loginvariables = {
+  email: string;
+  password: string;
+}
+
+
 
 export function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,6 +42,7 @@ export function Login() {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { login} = useAuth();
+  // const [loginMutation, {}]
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
